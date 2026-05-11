@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+}
+
+.time-row {
+  height: 100px;
+}
+
+@utility text-headline-md {
+  font-size: 1.75rem;
+  line-height: 2.125rem;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Module EEG — tokens alignés sur les utilitaires M3 utilisés dans la worklist */
+  --color-surface-container-lowest: #fffbfe;
+  --color-surface-container-high: #e6e0e9;
+  --color-surface-container-low: #f7f2fa;
+  --color-on-surface: #1d1b20;
+  --color-on-surface-variant: #49454f;
+  --color-error: #dc2626;
+  --color-error-container: #f9dedc;
+  --color-on-error-container: #410e0b;
+  --color-secondary: #625b71;
+  --color-secondary-fixed: #e8def8;
+  --color-on-secondary-container: #1d192b;
+  --color-warning: #f59e0b;
+  --color-tertiary: #7d5260;
+  --color-tertiary-fixed: #ffd8e4;
+  --color-on-tertiary-fixed: #31111d;
+  --color-on-tertiary-fixed-variant: #633b48;
+  --color-primary: #6750a4;
+  --color-primary-container: #eaddff;
+  --color-primary-fixed: #eaddff;
+  --color-outline-variant: #79747e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
