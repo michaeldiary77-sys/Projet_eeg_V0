@@ -1,0 +1,80 @@
+import type { Notification } from '@/types/eeg/notification'
+
+export const MOCK_NOTIFICATIONS: Notification[] = [
+  {
+    id: 'notif-001',
+    niveau: 'STAT',
+    type: 'ALERTE_CRITIQUE',
+    titre: 'STAT — Crise épileptique active',
+    message: 'La patiente RAKOTOARIVELO Clara (PAT-00112) présente une crise tonico-clonique en salle EEG 2. Intervention immédiate requise.',
+    patient: 'RAKOTOARIVELO Clara',
+    horodatage: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+    lu: false,
+    actions: [
+      { label: 'Voir le dossier', style: 'primary' },
+      { label: 'Alerter l\'équipe', style: 'secondary' },
+    ],
+  },
+  {
+    id: 'notif-002',
+    niveau: 'URGENTE',
+    type: 'ALERTE_URGENTE',
+    titre: 'Examen STAT en attente — ANDRIAMBELO Sophie',
+    message: 'Un examen Vidéo-EEG (24h) STAT est en attente depuis 10 minutes pour la patiente ANDRIAMBELO Sophie (PAT-00678). Prescripteur : Dr. Ranaivo.',
+    patient: 'ANDRIAMBELO Sophie',
+    horodatage: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+    lu: false,
+    actions: [
+      { label: 'Prendre en charge', style: 'primary' },
+    ],
+  },
+  {
+    id: 'notif-003',
+    niveau: 'NORMALE',
+    type: 'RAPPORT',
+    titre: 'Rapport disponible — RAHARIJAONA Paul',
+    message: 'Le rapport EEG de Routine du patient RAHARIJAONA Paul (PAT-00189) est prêt pour validation par le neurologue.',
+    patient: 'RAHARIJAONA Paul',
+    horodatage: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    lu: false,
+    actions: [
+      { label: 'Valider le rapport', style: 'primary' },
+      { label: 'Annoter', style: 'secondary' },
+    ],
+  },
+  {
+    id: 'notif-004',
+    niveau: 'NORMALE',
+    type: 'RAPPORT',
+    titre: 'Rapport validé — RAKOTO Jean',
+    message: 'Le rapport EEG Standard du patient RAKOTO Jean (PAT-00234) a été validé par Dr. Rabe à 08h47.',
+    patient: 'RAKOTO Jean',
+    horodatage: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    lu: true,
+    actions: [
+      { label: 'Voir le rapport', style: 'secondary' },
+    ],
+  },
+  {
+    id: 'notif-005',
+    niveau: 'EN_ATTENTE',
+    type: 'SYSTEME',
+    titre: 'Maintenance planifiée — Système EEG',
+    message: 'Une maintenance préventive du système d\'acquisition EEG est planifiée ce soir à 22h00. Les équipements seront indisponibles pendant 2 heures.',
+    horodatage: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+    lu: true,
+  },
+  {
+    id: 'notif-006',
+    niveau: 'URGENTE',
+    type: 'ALERTE_URGENTE',
+    titre: 'Délai dépassé — RABEMANANJARA Aina',
+    message: 'L\'examen EEG Standard de la patiente RABEMANANJARA Aina (PAT-00901) dépasse le délai recommandé pour une demande URGENTE. Veuillez planifier.',
+    patient: 'RABEMANANJARA Aina',
+    horodatage: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+    lu: false,
+    actions: [
+      { label: 'Planifier maintenant', style: 'primary' },
+    ],
+  },
+]

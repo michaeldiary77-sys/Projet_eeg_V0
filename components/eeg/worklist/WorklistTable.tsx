@@ -7,16 +7,9 @@ import {
   FileText,
   MoreVertical,
 } from 'lucide-react'
+import type { DemandeEEG } from '@/types/eeg/worklist'
 
-export interface DemandeEEG {
-  id: string
-  priorite: 'STAT' | 'URGENTE' | 'NORMALE'
-  nomPatient: string
-  idPatient: string
-  typeEEG: string
-  prescripteurNom: string
-  statut: 'EN_ATTENTE' | 'EN_COURS' | 'REALISEE' | 'ANNULEE' | 'ACK_RECU'
-}
+export type { DemandeEEG }
 
 export interface WorklistTableProps {
   demandes: DemandeEEG[]
@@ -98,6 +91,22 @@ const actionButtonClass =
   'p-2 hover:bg-primary-container/10 rounded-full text-primary transition-colors'
 
 export default function WorklistTable({ demandes }: WorklistTableProps) {
+  if (demandes.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <span className="material-symbols-outlined text-4xl text-slate-300 mb-3">
+          assignment
+        </span>
+        <p className="text-sm font-bold text-on-surface-variant">
+          Aucune demande trouvée
+        </p>
+        <p className="text-xs text-slate-400 mt-1">
+          Vérifiez la connexion avec le serveur
+        </p>
+      </div>
+    )
+  }
+
   return (
     <table className="w-full border-collapse text-left">
         <thead>

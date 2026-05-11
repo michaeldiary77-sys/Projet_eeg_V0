@@ -1,77 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-import PlanningTopbar from '@/components/eeg/planning/PlanningTopbar'
+import { useMemo, useState } from 'react'
+import PlanningToolbar from '@/components/eeg/planning/PlanningToolbar'
 import CalendrierSemaine from '@/components/eeg/planning/CalendrierSemaine'
 import PanneauDetailRDV from '@/components/eeg/planning/PanneauDetailRDV'
-import PlanningToolbar from '@/components/eeg/planning/PlanningToolbar'
 import type { RendezVousEEG } from '@/types/eeg/planning'
+import { MOCK_RENDEZ_VOUS } from '@/data/mock/eeg-rdv.mock'
 
-const mockRendezVous: RendezVousEEG[] = [
-  {
-    id: 'RDV-001',
-    patient: {
-      nom: 'RAKOTOMALALA',
-      prenom: 'Jean',
-      age: 58,
-      sexe: 'M',
-      idDossier: '24901-2023',
-    },
-    typeEEG: 'Vidéo-EEG (24h)',
-    prescripteur: 'Dr. Tahina R.',
-    salle: 'Salle 02',
-    priorite: 'STAT',
-    statut: 'EN_ATTENTE',
-    dateRDV: '2026-05-12',
-    heureDebut: '09:00',
-    heureFin: '10:30',
-    dureMinutes: 90,
-    renseignementClinique:
-      'Suspicion épilepsie temporale. Crises focales répétées.',
-  },
-  {
-    id: 'RDV-002',
-    patient: {
-      nom: 'RANDRIANASY',
-      prenom: 'Fara',
-      age: 34,
-      sexe: 'F',
-      idDossier: '24902-2023',
-    },
-    typeEEG: 'EEG de Routine',
-    prescripteur: 'Dr. Lala M.',
-    salle: 'Salle 01',
-    priorite: 'URGENTE',
-    statut: 'EN_COURS',
-    dateRDV: '2026-05-14',
-    heureDebut: '14:00',
-    heureFin: '15:00',
-    dureMinutes: 60,
-    renseignementClinique:
-      'Patiente présentant des crises focales suspectées. Nécessite une stimulation lumineuse intermittente. Suivie par Dr. Rakoto.',
-  },
-  {
-    id: 'RDV-003',
-    patient: {
-      nom: 'ANDRIAMIFIDY',
-      prenom: 'Solofo',
-      age: 42,
-      sexe: 'M',
-      idDossier: '24903-2023',
-    },
-    typeEEG: 'Contrôle',
-    prescripteur: 'Dr. Alain H.',
-    salle: 'Salle 03',
-    priorite: 'NORMALE',
-    statut: 'EN_ATTENTE',
-    dateRDV: '2026-05-15',
-    heureDebut: '10:30',
-    heureFin: '11:30',
-    dureMinutes: 60,
-    renseignementClinique: 'Contrôle post-traitement antiépileptique.',
-  },
-]
-
+// Helpers de date
 function getLundiDeSemaine(offset: number): Date {
   const today = new Date()
   const jour = today.getDay()
@@ -82,60 +18,71 @@ function getLundiDeSemaine(offset: number): Date {
   return lundi
 }
 
+function toYYYYMMDD(date: Date): string {
+  return date.toISOString().split('T')[0]
+}
+
 function getLabelSemaine(lundi: Date): string {
   const dimanche = new Date(lundi)
   dimanche.setDate(lundi.getDate() + 6)
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }
   const debutStr = lundi.toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'long',
   })
-  const finStr = dimanche.toLocaleDateString('fr-FR', options)
+  const finStr = dimanche.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
   return `Semaine du ${debutStr} - ${finStr}`
 }
 
 export default function PlanningPage() {
   const [offsetSemaine, setOffsetSemaine] = useState(0)
-  const [rdvSelectionne, setRdvSelectionne] =
-    useState<RendezVousEEG | null>(null)
+  const [rdvSelectionne, setRdvSelectionne] = useState<RendezVousEEG | null>(null)
 
   const lundi = getLundiDeSemaine(offsetSemaine)
-  const labelSemaine = getLabelSemaine(lundi)
+  const dimanche = new Date(lundi)
+  dimanche.setDate(lundi.getDate() + 6)
+
+  // Filtre les RDV de la semaine courante depuis les données mock
+  const rendezVous = useMemo<RendezVousEEG[]>(() => {
+    const debut = toYYYYMMDD(lundi)
+    const fin = toYYYYMMDD(dimanche)
+    return MOCK_RENDEZ_VOUS.filter(
+      (rdv) => rdv.dateRDV >= debut && rdv.dateRDV <= fin
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offsetSemaine])
 
   return (
-    <div className="flex min-h-full flex-col">
-      <PlanningTopbar />
+    <div className="flex h-[calc(100vh-8rem)] flex-col gap-6">
+      <PlanningToolbar
+        labelSemaine={getLabelSemaine(lundi)}
+        soustitre="Unité d'Électroencéphalographie"
+        onSemainePrecedente={() => setOffsetSemaine((o) => o - 1)}
+        onSemaineSuivante={() => setOffsetSemaine((o) => o + 1)}
+        onNouveauRDV={() => console.log('Nouveau RDV')}
+      />
 
-      <div className="flex min-h-0 flex-1 flex-col px-8 pb-8 pt-6">
-        <PlanningToolbar
-          labelSemaine={labelSemaine}
-          soustitre={"Unité d'Électroencéphalographie"}
-          onSemainePrecedente={() => setOffsetSemaine((o) => o - 1)}
-          onSemaineSuivante={() => setOffsetSemaine((o) => o + 1)}
-          onNouveauRDV={() => console.log('Nouveau RDV')}
-        />
-
-        <div className="mx-auto mt-6 flex min-h-[70vh] w-full max-w-7xl flex-1 items-stretch gap-6">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <CalendrierSemaine
-              rendezVous={mockRendezVous}
-              rdvSelectionne={rdvSelectionne}
-              onRDVClick={setRdvSelectionne}
-              lundiSemaine={lundi}
-            />
-          </div>
+      <div className="flex flex-1 gap-6 overflow-hidden">
+        <div className="flex-1 overflow-auto rounded-xl bg-surface-container-lowest shadow-sm">
+          <CalendrierSemaine
+            rendezVous={rendezVous}
+            rdvSelectionne={rdvSelectionne}
+            onRDVClick={setRdvSelectionne}
+            lundiSemaine={lundi}
+          />
+        </div>
+        {rdvSelectionne && (
           <PanneauDetailRDV
             rdv={rdvSelectionne}
             onClose={() => setRdvSelectionne(null)}
-            onCommencer={(r) => console.log('Commencer', r.id)}
-            onModifier={(r) => console.log('Modifier', r.id)}
-            onAnnuler={(r) => console.log('Annuler', r.id)}
+            onCommencer={(rdv) => console.log('Commencer', rdv.id)}
+            onModifier={(rdv) => console.log('Modifier', rdv.id)}
+            onAnnuler={(rdv) => console.log('Annuler', rdv.id)}
           />
-        </div>
+        )}
       </div>
     </div>
   )
